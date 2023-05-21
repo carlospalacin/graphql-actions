@@ -24,9 +24,13 @@ jobs:
 
     - name: Docker login
       run: |
-        echo "Init docker login"
         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-        echo "Login success"
+
+    - name: Build Docker image
+      run: docker build -t carlospalacin:graphql-actions:0.0.2 .
+
+    - name: Push Docker image
+      run: docker push -t carlospalacin:graphql-actions:0.0.2 .
 
     # - name: Build the Docker image
     #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
