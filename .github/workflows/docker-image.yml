@@ -31,21 +31,22 @@ jobs:
       id: version
 
     - name: Docker login
+      run: |
+        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+
+    - name: Build Docker image
       env:
         VERSION: ${{ steps.version.outputs.version }}
       run: |
-        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-        echo "New version is $VERSION"
+        docker build -t carlospalacin/graphql-actions:$VERSION .
+        docker build -t carlospalacin/graphql-actions:latest .
 
-    #- name: Build Docker image
-    #  run: |
-    #    docker build -t carlospalacin/graphql-actions:0.0.2 .
-    #    docker build -t carlospalacin/graphql-actions:latest .
-#
-    #- name: Push Docker image
-    #  run: |
-    #    docker push carlospalacin/graphql-actions:0.0.2
-    #    docker push carlospalacin/graphql-actions:latest
+    - name: Push Docker image
+      env:
+        VERSION: ${{ steps.version.outputs.version }}
+      run: |
+        docker push carlospalacin/graphql-actions:$VERSION
+        docker push carlospalacin/graphql-actions:latest
 
     # - name: Build the Docker image
     #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
